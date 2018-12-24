@@ -1,0 +1,82 @@
+from PyQt5.QtWidgets import QApplication, QMainWindow, QtMenu, QtMenuBar, QAction, QFileDialog
+from PyQt5.QtCore import Qt, QtPoint
+from PyQt5.QtGui import QIcon, QImage, QPainter
+import sys
+
+
+class Window(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        
+        TOP = 400
+        LEFT = 400
+        HEIGHT = 1440
+        WIDTH = 820
+        
+        icon  = "icons/pain.png"
+        
+        self.setWindowTitle("Painf")
+        self.setGeometry(TOP, LEFT, HEIGHT, WIDTH)
+        self.setWindowIcon(QICon(icon))
+        
+        self.image = QImage(self.size(), QImage.Format_RGB32)
+        self.image.fill(Qt.white)
+        
+        self.drawing = False
+        self.brushSize = 2
+        self.brushColor = Qt.black
+        
+        self.lastPoint = QPoint() 
+        
+        mainMenu = self.menuBar()
+        filename = mainMenu.addMenu("File")
+        brushMenu = mainMenu.addMenu("Brash Size")
+        brushColor = mainMenu.addMenu("Brash Color")
+        
+        saveAction = QAction(QIcon("icons/save.png"), "Save", self)
+        saveAction.setShortcut("Ctrl+S")
+        fileMenu.addAction(saveAction)
+        saveAction.triggered.connect(self.save)
+        
+        
+        threepxAction = QAction(QIcon("icons/threepx.png"), "3px", self)
+        threepxAction.setShortcut("Ctrl+T")
+        brushMenu.addAction(threepxAction)
+        
+        blackAction = QAction(QIcon("icons/black.png"))
+        blackAction.setShortcut("Ctrl+B")
+        brushColor.addAction(blackAction)
+         
+    def mousePressEvent(self, *args, **kwargs):
+        if event.button() == Qt.LeftButton:
+            self.drawing = True
+            self.lastPoint = event.pos()
+            
+    def mouseMoveEvent(self, event):
+        if (event.buttons() & Qt.LeftButton) & self.drawing:
+            painter = QPainter(self.image)
+            painter.setPen(QPen(self.brushColor, self.brushSize, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+            painter.drawLine(self.lastPoint, event.pos())
+            self.lastPoint = event.pos()
+            self.update()
+    
+    def mouseReleaseEvent(self, event):
+        if event.button == Qt.LeftButton:
+            self.drawing = False
+            
+    def paintEvent(self, event):
+        canvasPainter = QPainter(self)
+        canvasPainter.drawImage(self.rect(), self.image, self.image.rect())
+        
+    def save(self):
+        filePath = QFileDialog.getSaveFileName(self, "Save Image", "", "PNG(*.png);;JPEG(*.jpg *.jpeg);; ALL Files('.'!)")
+        if filePath == "":
+            return
+        self.image.save(filePath)
+        
+        
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = Window()
+    window.show()
+    app.exec()
