@@ -6,9 +6,6 @@ from PyQt5.QtGui import QIcon, QImage, QPainter, QPen, QColor
 from PyQt5.QtWidgets import QColorDialog, QLabel
 from PyQt5 import QtWidgets, QtGui, QtCore
 import sys
-import os
-import random
-import types
 
 
 class Window(QMainWindow):
