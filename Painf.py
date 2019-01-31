@@ -290,24 +290,13 @@ class Window(QMainWindow):
         
     
     def mousePressEvent(self, event):
-        funct = getattr(self, "%s_mousePressEvent" % self.mode, None)
-        if funct:
-            return funct(event)
-        
-    def mouseMoveEvent(self, event):
-        funct = getattr(self, "%s_mouseMoveEvent" % self.mode, None)
-        if funct:
-            return funct(event)
-  
-    def brush_mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.drawing = True
-            self.lastPoint = event.pos()
-     # Если была нажата левая кнопка мыши lastPoint станет координатой действия
-            
-    def brush_mouseMoveEvent(self, event):
-        # self.canvasSize.setText('Canvas size: {}, {}'.format(HEIGHT, WIDTH))
+            self.lastPoint = event.pos()        
+        # Если была нажата левая кнопка мыши lastPoint станет координатой действия
         
+    def mouseMoveEvent(self, event):
+        # self.canvasSize.setText('Canvas size: {}, {}'.format(HEIGHT, WIDTH))
         self.coords.setText("Coords: {}, {}".format(event.x(), event.y()))
         # Обозначения коорднат курсора
         
@@ -317,9 +306,10 @@ class Window(QMainWindow):
             painter.drawLine(self.lastPoint, event.pos())
             # Если была нажата левая кнопка мыши и drawing == True, то создаем ручку
             self.lastPoint = event.pos()
+            
         self.update()
     
-    def brush_mouseReleaseEvent(self, event):    
+    def mouseReleaseEvent(self, event):    
         if event.button == Qt.LeftButton:
             self.drawing = False
         # Если отпустить кнопку мыши, то рисование прекратится
@@ -401,36 +391,42 @@ class Window(QMainWindow):
     def blackBgColor(self):
         self.bgColor = Qt.black
         self.image.fill(self.bgColor)
+        
         self.update()
         # Изменение цвета заднего фона на черный
         
     def whiteBgColor(self):
         self.bgColor = Qt.white
         self.image.fill(self.bgColor)
+        
         self.update()
         # Изменение цвета заднего фона на белый
     
     def yellowBgColor(self):
         self.bgColor = Qt.yellow 
         self.image.fill(self.bgColor)
+        
         self.update()
         # Изменение цвета заднего фона на желтый
         
     def greenBgColor(self):
         self.bgColor = Qt.green 
         self.image.fill(self.bgColor)
+        
         self.update()
         # Изменение цвета заднего фона на зеленый
         
     def redBgColor(self):
         self.bgColor = Qt.red
         self.image.fill(self.bgColor)
+        
         self.update()
         # Изменение цвета заднего фона на красный
         
     def blueBgColor(self):
         self.bgColor = Qt.blue
         self.image.fill(self.bgColor)
+        
         self.update()
         # Изменение цвета заднего фона на синий
         
@@ -441,6 +437,7 @@ class Window(QMainWindow):
         if color.isValid():
             self.bgColor = color
         self.image.fill(self.bgColor)
+        
         self.update()
         # Присваивание выбраного цвета заднему фону 
     
@@ -463,11 +460,13 @@ class Window(QMainWindow):
 
         if path:
             pixmap = self.image
-            pixmap.save(path, "PNG" )         
+            pixmap.save(path, "PNG" )   
+        # Сохранение готового рисунка
             
     def paintEvent(self, event):
         canvasPainter = QPainter(self)
-        canvasPainter.drawImage(self.rect(), self.image, self.image.rect())            
+        canvasPainter.drawImage(self.rect(), self.image, self.image.rect()) 
+        # Начинаем рисовать произвольную линию  
    
 if __name__ == '__main__':
     app = QApplication(sys.argv)
